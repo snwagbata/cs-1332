@@ -50,7 +50,6 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException  if data is null
      */
     public void addAtIndex(int index, T data) {
-        // TODO test that I can only add elements in order i.e I cannot add
         //  element at index 3 if index 2 has not been initialized
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Invalid Index Provided.");
