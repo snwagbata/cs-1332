@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * This is a basic set of unit tests for ArrayList.
@@ -229,5 +230,229 @@ public class ArrayListStudentTest {
         assertEquals(0, list.size());
         assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
                 list.getBackingArray());
+    }
+
+    //JUnits from Killian Patrick Vetter
+    @Test(timeout = TIMEOUT)
+    public void testResizeBack() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < 13; i++) {
+            arr.addToBack(i);
+        }
+        assertEquals(13, arr.size());
+        Integer[] correctArr = new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                11, 12, null, null, null, null, null};
+        assertArrayEquals(correctArr, arr.getBackingArray());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testResizeFront() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 12; i >= 0; i--) {
+            arr.addToFront(i);
+        }
+        assertEquals(13, arr.size());
+        Integer[] correctArr = new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                11, 12, null, null, null, null, null};
+        assertArrayEquals(correctArr, arr.getBackingArray());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testResizeIndex1() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            arr.addToBack(i);
+        }
+        assertEquals(9, arr.size());
+        arr.addAtIndex(3, 20);
+        arr.addAtIndex(8, 21);
+        Integer[] correctArr = new Integer[] {0, 1, 2, 20, 3, 4, 5, 6, 21, 7, 8,
+                null, null, null, null, null, null, null};
+        assertEquals(11, arr.size());
+        assertArrayEquals(correctArr, arr.getBackingArray());
+    }
+
+    //test adding to end and front with addAtIndex
+    @Test(timeout = TIMEOUT)
+    public void testResizeIndex2() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < 13; i++) {
+            arr.addAtIndex(arr.size(), i);
+        }
+        assertEquals(13, arr.size());
+        Integer[] correctArr = new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                11, 12, null, null, null, null, null};
+        assertArrayEquals(correctArr, arr.getBackingArray());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testResizeIndex3() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 12; i >= 0; i--) {
+            arr.addAtIndex(0, i);
+        }
+        assertEquals(13, arr.size());
+        Integer[] correctArr = new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                11, 12, null, null, null, null, null};
+        assertArrayEquals(correctArr, arr.getBackingArray());
+    }
+
+    //JUnits from Olivia Blanchette
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testAddOutOfBoundsTooBig() {
+        ArrayList<String> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+        array.addAtIndex(5, "Hi");
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testRemoveOutOfBoundsTooBig() {
+        ArrayList<String> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+        array.removeAtIndex(5);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testRemoveOutOfBoundsEmptyAt0() {
+        ArrayList<String> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+        array.removeAtIndex(0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testAddOutOfBoundsLessThan0() {
+        ArrayList<String> array = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            array.addToBack("Num" + (i + 1) + ".");
+        }
+        assertEquals(15, array.size());
+        String[] real = new String[] {"Num1.", "Num2.", "Num3.", "Num4.",
+                "Num5.", "Num6.", "Num7.", "Num8.", "Num9.", "Num10.", "Num11.",
+                "Num12.", "Num13.", "Num14.", "Num15.", null, null, null};
+        assertArrayEquals(real, array.getBackingArray());
+        array.addAtIndex(-1, "Hi");
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testRemoveOutOfBoundsLessThan0() {
+        ArrayList<String> array = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            array.addToBack("Num" + (i + 1) + ".");
+        }
+        assertEquals(15, array.size());
+        String[] real = new String[] {"Num1.", "Num2.", "Num3.", "Num4.",
+                "Num5.", "Num6.", "Num7.", "Num8.", "Num9.", "Num10.", "Num11.",
+                "Num12.", "Num13.", "Num14.", "Num15.", null, null, null};
+        assertArrayEquals(real, array.getBackingArray());
+        array.removeAtIndex(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testAddOutOfBounds1Larger() {
+        ArrayList<String> array = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            array.addAtIndex(i, "Num" + (i + 1) + ".");
+        }
+        assertEquals(15, array.size());
+        String[] real = new String[] {"Num1.", "Num2.", "Num3.", "Num4.",
+                "Num5.", "Num6.", "Num7.", "Num8.", "Num9.", "Num10.", "Num11.",
+                "Num12.", "Num13.", "Num14.", "Num15.", null, null, null};
+        assertArrayEquals(real, array.getBackingArray());
+        array.addAtIndex(16, "Hi");
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class, timeout = TIMEOUT)
+    public void testRemoveOutOfBounds1Larger() {
+        ArrayList<String> array = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            array.addAtIndex(i, "Num" + (i + 1) + ".");
+        }
+        assertEquals(15, array.size());
+        String[] real = new String[] {"Num1.", "Num2.", "Num3.", "Num4.",
+                "Num5.", "Num6.", "Num7.", "Num8.", "Num9.", "Num10.", "Num11.",
+                "Num12.", "Num13.", "Num14.", "Num15.", null, null, null};
+        assertArrayEquals(real, array.getBackingArray());
+        array.removeAtIndex(15);
+    }
+
+    //JUnits from me (Adil Farooq)
+    @Test(expected = IllegalArgumentException.class, timeout = TIMEOUT)
+    public void testAddingNullData() {
+        ArrayList<Integer> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+
+        for (int i = 0; i < 5; i++) {
+            array.addAtIndex(i, i);
+        }
+        assertEquals(5, array.size());
+        Integer[] testCopy;
+        testCopy = new Integer[] {0, 1, 2, 3, 4, null, null, null, null};
+        assertArrayEquals(testCopy, array.getBackingArray());
+
+        array.addAtIndex(2, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class, timeout = TIMEOUT)
+    public void testAddingNullDataToFront() {
+        ArrayList<Integer> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+
+        for (int i = 0; i < 5; i++) {
+            array.addAtIndex(i, i);
+        }
+        assertEquals(5, array.size());
+        Integer[] testCopy;
+        testCopy = new Integer[] {0, 1, 2, 3, 4, null, null, null, null};
+        assertArrayEquals(testCopy, array.getBackingArray());
+
+        array.addToFront(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class, timeout = TIMEOUT)
+    public void testAddingNullDataToBack() {
+        ArrayList<Integer> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+
+        for (int i = 0; i < 5; i++) {
+            array.addAtIndex(i, i);
+        }
+        assertEquals(5, array.size());
+        Integer[] testCopy;
+        testCopy = new Integer[] {0, 1, 2, 3, 4, null, null, null, null};
+        assertArrayEquals(testCopy, array.getBackingArray());
+
+        array.addToBack(null);
+    }
+
+    @Test(expected = NoSuchElementException.class, timeout = TIMEOUT)
+    public void testRemovingFromFrontOfEmptyArray() {
+        ArrayList<Integer> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+
+        array.removeFromFront();
+    }
+
+    @Test(expected = NoSuchElementException.class, timeout = TIMEOUT)
+    public void testRemovingFromBackOfEmptyArray() {
+        ArrayList<Integer> array = new ArrayList<>();
+        assertEquals(0, array.size());
+        assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
+                array.getBackingArray());
+
+        array.removeFromBack();
     }
 }

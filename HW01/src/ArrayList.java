@@ -101,6 +101,8 @@ public class ArrayList<T> {
             throw new IllegalArgumentException("Data cannot be null.");
         }
 
+        //TODO: shift element along with the resizing
+
         // resize backingArray if needed
         if (size + 1 > backingArray.length) {
             this.growListCapacity();
@@ -162,9 +164,11 @@ public class ArrayList<T> {
      */
     public T removeAtIndex(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Invalid Index Provided.");
+            throw new IndexOutOfBoundsException("Invalid Index Provided. The " +
+                    "index should be between 0 and " + (size - 1));
         }
 
+        // This should prevent the loop below from throwing an index out of bounds exception
         if (index == size - 1) {
             return removeFromBack();
         }
@@ -191,7 +195,8 @@ public class ArrayList<T> {
      */
     public T removeFromFront() {
         if (this.isEmpty()) {
-            throw new NoSuchElementException("The ArrayList is empty.");
+            throw new NoSuchElementException("The ArrayList is empty thus the" +
+                    " element does not exist.");
         }
 
         T removedElement = backingArray[0];
@@ -214,7 +219,8 @@ public class ArrayList<T> {
      */
     public T removeFromBack() {
         if (this.isEmpty()) {
-            throw new NoSuchElementException("The ArrayList is empty.");
+            throw new NoSuchElementException("The ArrayList is empty thus the" +
+                    " element does not exist.");
         }
 
         T removed = backingArray[size - 1];
@@ -235,7 +241,8 @@ public class ArrayList<T> {
      */
     public T get(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Invalid Index Provided.");
+            throw new IndexOutOfBoundsException("Invalid Index Provided. The " +
+                    "index should be between 0 and " + (size - 1));
         }
 
         return backingArray[index];

@@ -6,8 +6,11 @@ import static org.junit.Assert.*;
 
 public class ArrayListTest {
 
+    private ArrayList<String> list;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        list = new ArrayList<>();
     }
 
     @After
@@ -28,6 +31,12 @@ public class ArrayListTest {
 
     @Test
     public void removeAtIndex() {
+        list.addToFront("a");
+        list.addToFront("b");
+        list.addToFront("c");
+        list.addToFront("d");
+
+        assertEquals("d", list.removeAtIndex(0));
     }
 
     @Test
