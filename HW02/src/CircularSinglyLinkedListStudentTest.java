@@ -819,4 +819,64 @@ public class CircularSinglyLinkedListStudentTest {
         assertSame(temp, list.removeLastOccurrence("0a"));
 
     }
+
+    //Test for lists of size 1 to see if the head points to itself
+    @Test(timeout = TIMEOUT)
+    public void testHeadPointsToItself() {
+        //for add to front
+        list.addToFront("0a"); // 0a
+        assertNotNull(list.getHead().getNext());
+        assertEquals("0a", list.getHead().getNext().getData());
+        list.clear();
+
+        //for add to back
+        list.addToBack("0a"); // 0a
+        assertNotNull(list.getHead().getNext());
+        assertEquals("0a", list.getHead().getNext().getData());
+        list.clear();
+
+        //for add at index
+        list.addAtIndex(0, "0a");
+        assertNotNull(list.getHead().getNext());
+        assertEquals("0a", list.getHead().getNext().getData());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRemovingAllOccurrences() {
+        list.addToFront("0a"); // 0a
+        list.addToFront("1a"); // 1a 0a
+        list.addToFront("2a"); // 2a 1a 0a
+        list.addToFront("3a"); // 3a 2a 1a 0a
+        list.addToFront("0a"); // 0a 3a 2a 1a 0a
+        list.addToFront("1a"); // 1a 0a 3a 2a 1a 0a
+        list.addToFront("0a"); // 0a 1a 0a 3a 2a 1a 0a
+
+        String temp = "0a";
+        assertEquals(7, list.size());
+
+        assertSame(temp, list.removeLastOccurrence("0a")); // 0a 1a 0a 3a 2a 1a
+        assertEquals(6, list.size());
+        assertNotNull(list.get(4));
+        assertSame("2a", list.get(4));
+        assertNotNull(list.get(5));
+        assertSame("1a", list.get(5));
+
+        assertSame(temp, list.removeLastOccurrence("0a")); // 0a 1a 3a 2a 1a
+        assertEquals(5, list.size());
+        assertNotNull(list.get(2));
+        assertSame("3a", list.get(2));
+        assertNotNull(list.get(3));
+        assertSame("2a", list.get(3));
+
+        assertSame(temp, list.removeLastOccurrence("0a")); // 1a 3a 2a 1a
+        assertEquals(4, list.size());
+        assertNotNull(list.get(0));
+        assertSame("1a", list.get(0));
+        assertNotNull(list.get(1));
+        assertSame("3a", list.get(1));
+        assertNotNull(list.get(2));
+        assertSame("2a", list.get(2));
+        assertNotNull(list.get(3));
+        assertSame("1a", list.get(3));
+    }
 }
