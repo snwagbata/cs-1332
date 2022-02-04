@@ -59,11 +59,14 @@ public class LinkedQueue<T> {
      */
     public T dequeue() {
         if (size == 0) {
-            throw new NoSuchElementException("Could not dequeue the queue " +
-                    "because it is empty.");
+            throw new NoSuchElementException("Could not dequeue the queue "
+                    + "because it is empty.");
         }
 
         T removed = head.getData();
+        if (size == 1) {
+            tail = null;
+        }
         size--;
         head = head.getNext();
         return removed;

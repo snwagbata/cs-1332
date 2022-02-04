@@ -427,4 +427,91 @@ public class QueueStudentTest {
         assertNotNull(cur);
         assertEquals("3a", cur.getData());
     }
+
+    //Tests by Shravan Cheekati
+    @Test(timeout = TIMEOUT)
+    public void testQueueFrontWhenClear() {
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+
+        String top = "topofthequeue";
+        String second = "2a";
+
+        assertEquals(0, array.size());
+        array.enqueue("1a");
+        assertEquals(1, array.size());
+
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a"); //after 9 dequeues
+        array.enqueue(top);
+        array.enqueue(second);
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+        array.enqueue("1a");
+
+        //if you continually increment front, this should be when it fails
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+        array.dequeue();
+
+        assertEquals(10, array.size());
+        //Makes sure your first element is actually the first enqueued element'
+        assertEquals(top, array.peek());
+
+        array.dequeue();
+        assertEquals(second, array.peek());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void isYourLinkedQueueReallyEmpty() {
+        linked.enqueue("1a");
+        linked.enqueue("1a");
+        linked.enqueue("1a");
+        linked.enqueue("1a");
+
+        linked.dequeue();
+        linked.dequeue();
+        linked.dequeue();
+        linked.dequeue();
+
+        assertEquals(0, linked.size());
+
+        //iow - Tests if a node can still be accessible
+        assertNull("object is null: ", linked.getHead());
+        assertNull("Object is null: ", linked.getTail());
+    }
 }

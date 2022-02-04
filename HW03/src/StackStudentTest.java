@@ -264,4 +264,44 @@ public class StackStudentTest {
         assertEquals("2a", linked.peek());
         assertEquals(1, linked.size());
     }
+
+    //JUnits by Shravan Cheekati
+    @Test(timeout = TIMEOUT)
+    public void testLinkedStackResizePush() {
+        String temp = "5a";
+        linked.push(temp);
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("top");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+        linked.push("1a");
+
+
+        assertEquals(23, linked.size());
+
+        linked.pop();
+        linked.pop();
+        linked.pop();
+        linked.pop();
+
+        assertEquals(19, linked.size());
+        assertEquals("top", linked.getHead().getData());
+    }
 }

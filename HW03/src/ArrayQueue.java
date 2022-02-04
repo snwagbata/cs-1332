@@ -69,14 +69,8 @@ public class ArrayQueue<T> {
     @SuppressWarnings("unchecked")
     private void resize() {
         T[] newArray = (T[]) new Object[backingArray.length * 2];
-        int newFront = 0;
-        for (int i = front; i < backingArray.length; i++) {
-            newArray[newFront] = backingArray[i];
-            newFront++;
-        }
-        for (int i = 0; i < front; i++) {
-            newArray[newFront] = backingArray[i];
-            newFront++;
+        for (int i = 0; i < size; i++) {
+            newArray[i] = backingArray[(i+front) % backingArray.length];
         }
         front = 0;
         backingArray = newArray;
