@@ -1,6 +1,10 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 /**
  * Your implementation of a BST.
@@ -51,16 +55,10 @@ public class BST<T extends Comparable<? super T>> {
      */
     public BST(Collection<T> data) {
         if (data == null) {
-            throw new IllegalArgumentException("Cannot insert null data into "
-                    + "the Tree");
+            throw new IllegalArgumentException("Cannot insert null data into " + "the Tree");
         }
 
         for (T element : data) {
-            //TODO: if using the add method for this method, delete the following line
-            if (element == null) {
-                throw new IllegalArgumentException("Cannot insert null data into "
-                        + "the Tree");
-            }
             // add the element to the tree
             add(element);
         }
@@ -85,9 +83,29 @@ public class BST<T extends Comparable<? super T>> {
      */
     public void add(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Cannot insert null data into "
-                    + "the Tree");
+            throw new IllegalArgumentException("Cannot insert null data into " + "the Tree");
         }
+
+        root = addHelper(root, data);
+    }
+
+    /**
+     * Helper method for adding.
+     *
+     * @param node root of the tree
+     * @param data data to be added
+     * @return root of the tree with data added
+     */
+    private BSTNode<T> addHelper(BSTNode<T> node, T data) {
+        if (node == null) {
+            size++;
+            return new BSTNode<>(data);
+        } else if (data.compareTo(node.getData()) < 0) {
+            node.setLeft(addHelper(node.getLeft(), data));
+        } else if (data.compareTo(node.getData()) > 0) {
+            node.setRight(addHelper(node.getRight(), data));
+        }
+        return node;
     }
 
     /**
@@ -119,12 +137,67 @@ public class BST<T extends Comparable<? super T>> {
      */
     public T remove(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Cannot remove invalid data "
-                    + "from the Tree");
+            throw new IllegalArgumentException("Cannot remove invalid data " + "from the Tree");
         }
 
-        throw new NoSuchElementException("Could not peek at the front of the queue because it is empty.");
+        BSTNode<T> dummy = new BSTNode<>(null);
+        root = removeHelper(root, data, dummy);
+        return dummy.getData();
 
+    }
+
+    /**
+     * Helper method for removing.
+     *
+     * @param node  root of the tree
+     * @param data  data to be removed
+     * @param dummy dummy node to store the data
+     * @return root of the tree with data removed
+     */
+    private BSTNode<T> removeHelper(BSTNode<T> node, T data, BSTNode<T> dummy) {
+        if (node == null) {
+            throw new NoSuchElementException("Could not remove the data because it is not in the tree.");
+        }
+
+        if (data.compareTo(node.getData()) < 0) {
+            node.setLeft(removeHelper(node.getLeft(), data, dummy));
+        } else if (data.compareTo(node.getData()) > 0) {
+            node.setRight(removeHelper(node.getRight(), data, dummy));
+        } else {
+            dummy.setData(node.getData());
+            size--;
+
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            } else if (node.getLeft() != null && node.getRight() == null) {
+                return node.getLeft();
+            } else if (node.getRight() != null && node.getLeft() == null) {
+                return node.getRight();
+            } else {
+                // handle case where parent has 2 children
+                BSTNode<T> dummy2 = new BSTNode<>(null);
+                node.setRight(removeSuccessor(node.getRight(), dummy2));
+                node.setData(dummy2.getData());
+            }
+        }
+        return node;
+    }
+
+    /**
+     * Helper method for removing.
+     *
+     * @param node      root of the tree
+     * @param storeNode dummy node to store the data
+     * @return root of the tree with data removed
+     */
+    private BSTNode<T> removeSuccessor(BSTNode<T> node, BSTNode<T> storeNode) {
+        if (node.getLeft() == null) {
+            storeNode.setData(node.getData());
+            return node.getRight();
+        } else {
+            node.setLeft(removeSuccessor(node.getLeft(), storeNode));
+            return node;
+        }
     }
 
     /**
@@ -146,12 +219,34 @@ public class BST<T extends Comparable<? super T>> {
      */
     public T get(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Cannot get invalid data "
-                    + "from the Tree");
+            throw new IllegalArgumentException("Cannot get invalid data " + "from the Tree");
         }
 
-        throw new NoSuchElementException("The provided data does not exist in" +
-                " the tree.");
+        T storedData = getHelper(root, data);
+        if (storedData == null) {
+            throw new NoSuchElementException("The provided data does not exist in" + " the tree.");
+        }
+        return storedData;
+    }
+
+    /**
+     * Helper method for get.
+     *
+     * @param node root of the tree
+     * @param data data to be searched for
+     * @return data in the tree equal to the parameter
+     */
+    private T getHelper(BSTNode<T> node, T data) {
+        if (node == null) {
+            return null;
+        }
+        if (data.compareTo(node.getData()) < 0) {
+            return getHelper(node.getLeft(), data);
+        } else if (data.compareTo(node.getData()) > 0) {
+            return getHelper(node.getRight(), data);
+        } else {
+            return node.getData();
+        }
     }
 
     /**
@@ -171,9 +266,30 @@ public class BST<T extends Comparable<? super T>> {
      */
     public boolean contains(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Cannot get invalid data " + "from the Tree");
         }
 
+        return containsHelper(root, data);
+    }
+
+    /**
+     * Helper method for contains.
+     *
+     * @param node root of the tree
+     * @param data data to be searched for
+     * @return true if the parameter is contained within the tree, false otherwise
+     */
+    private boolean containsHelper(BSTNode<T> node, T data) {
+        if (node == null) {
+            return false;
+        }
+        if (data.compareTo(node.getData()) < 0) {
+            return containsHelper(node.getLeft(), data);
+        } else if (data.compareTo(node.getData()) > 0) {
+            return containsHelper(node.getRight(), data);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -186,7 +302,25 @@ public class BST<T extends Comparable<? super T>> {
      * @return the pre-order traversal of the tree
      */
     public List<T> preorder() {
+        return preorderHelper(root);
+    }
 
+    /**
+     * Helper method for preorder.
+     *
+     * @param node root of the tree
+     * @return the pre-order traversal of the tree
+     */
+    private List<T> preorderHelper(BSTNode<T> node) {
+        List<T> list = new ArrayList<>();
+        if (node == null) {
+            return list;
+        }
+        list.add(node.getData());
+        list.addAll(preorderHelper(node.getLeft()));
+        list.addAll(preorderHelper(node.getRight()));
+
+        return list;
     }
 
     /**
@@ -199,7 +333,24 @@ public class BST<T extends Comparable<? super T>> {
      * @return the in-order traversal of the tree
      */
     public List<T> inorder() {
+        return inorderHelper(root);
+    }
 
+    /**
+     * Helper method for inorder.
+     *
+     * @param node root of the tree
+     * @return the in-order traversal of the tree
+     */
+    private List<T> inorderHelper(BSTNode<T> node) {
+        List<T> list = new ArrayList<>();
+        if (node == null) {
+            return list;
+        }
+        list.addAll(inorderHelper(node.getLeft()));
+        list.add(node.getData());
+        list.addAll(inorderHelper(node.getRight()));
+        return list;
     }
 
     /**
@@ -212,7 +363,25 @@ public class BST<T extends Comparable<? super T>> {
      * @return the post-order traversal of the tree
      */
     public List<T> postorder() {
+        return postorderHelper(root);
+    }
 
+    /**
+     * Helper method for postorder.
+     *
+     * @param node root of the tree
+     * @return the post-order traversal of the tree
+     */
+    private List<T> postorderHelper(BSTNode<T> node) {
+        List<T> list = new ArrayList<>();
+        if (node == null) {
+            return list;
+        }
+        list.addAll(postorderHelper(node.getLeft()));
+        list.addAll(postorderHelper(node.getRight()));
+        list.add(node.getData());
+
+        return list;
     }
 
     /**
@@ -229,7 +398,29 @@ public class BST<T extends Comparable<? super T>> {
      * @return the level-order traversal of the tree
      */
     public List<T> levelorder() {
+        List<T> list = new ArrayList<>();
+        if (root == null) {
+            return list;
+        }
 
+        Queue<BSTNode<T>> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            int level = queue.size();
+            for (int i = 0; i < level; i++) {
+                BSTNode<T> node = queue.remove();
+                list.add(node.getData());
+                if (node.getLeft() != null) {
+                    queue.add(node.getLeft());
+                }
+                if (node.getRight() != null) {
+                    queue.add(node.getRight());
+                }
+            }
+        }
+
+        return list;
     }
 
     /**
@@ -245,6 +436,27 @@ public class BST<T extends Comparable<? super T>> {
      * @return the height of the root of the tree, -1 if the tree is empty
      */
     public int height() {
+        return heightHelper(root);
+    }
+
+    /**
+     * Helper method for height.
+     *
+     * @param node root of the tree
+     * @return the height of the root of the tree, -1 if the tree is empty
+     */
+    private int heightHelper(BSTNode<T> node) {
+        if (node == null) {
+            return -1;
+        }
+        int leftHeight = heightHelper(node.getLeft());
+        int rightHeight = heightHelper(node.getRight());
+
+        if (leftHeight > rightHeight) {
+            return leftHeight + 1;
+        } else {
+            return rightHeight + 1;
+        }
 
     }
 
@@ -256,13 +468,14 @@ public class BST<T extends Comparable<? super T>> {
      * Must be O(1).
      */
     public void clear() {
-
+        root = null;
+        size = 0;
     }
 
     /**
      * Finds the path between two elements in the tree, specifically the path
      * from data1 to data2, inclusive of both.
-     * <p>
+     * <p>s
      * To do this, you must first find the deepest common ancestor of both data
      * and add it to the list. Then traverse to data1 while adding its ancestors
      * to the front of the list. Finally, traverse to data2 while adding its
@@ -308,9 +521,208 @@ public class BST<T extends Comparable<? super T>> {
      *                                            the tree
      */
     public List<T> findPathBetween(T data1, T data2) {
-        //TODO: state e
-        throw new NoSuchElementException("The provided data is not in the tree.");
+        if (data1 == null || data2 == null) {
+            throw new IllegalArgumentException("Cannot find path for invalid " + "data");
+        }
 
+        if (!contains(data1) || !contains(data2)) {
+            throw new NoSuchElementException("The data is not in the tree");
+        }
+
+        LinkedList<T> list = new LinkedList<>();
+        LinkedList<T> leftList = new LinkedList<>();
+        LinkedList<T> rightList = new LinkedList<>();
+
+
+        if (data1.equals(data2)) {
+            list.add(data1);
+            return list;
+        }
+
+        // find the deepest common ancestor
+        BSTNode<T> ancestor = findDeepestCommonAncestor(data1, data2, root);
+
+        if (ancestor == null) {
+            throw new NoSuchElementException("The data is not in the tree");
+        }
+
+        traverseHelper(ancestor, data1, leftList, rightList, ancestor.getData());
+        traverseHelper(ancestor, data2, leftList, rightList, ancestor.getData());
+
+System.out.println("deb left: " + leftList);
+System.out.println("deb right: " + rightList);
+        int indexOfAncestor = leftList.size();
+        leftList.addAll(rightList);
+        list.addAll(leftList);
+
+
+
+
+        // this is done because leftList and rightList are empty when there is
+        // no node in between data1 and data2
+        if (!leftList.contains(ancestor.getData())
+                && !rightList.contains(ancestor.getData()) && !ancestor.getData().equals(data1) && !ancestor.getData().equals(data2)) {
+            System.out.println("deb ancestor: " + indexOfAncestor);
+            list.add(indexOfAncestor, ancestor.getData());
+        }
+
+
+
+
+            list.addFirst(data1);
+
+
+            list.addLast(data2);
+
+
+
+
+        return list;
+//
+//        if (data1.compareTo(data2) < 0) {
+//            tempList = traverseHelper(ancestor, data1, leftList, rightList);
+//            if (tempList == null) {
+//                throw new NoSuchElementException("The data is not in the tree");
+//            }
+//
+//            tempList = traverseTo(ancestor, data2, rightList);
+//            if (tempList == null) {
+//                throw new NoSuchElementException("The data is not in the tree");
+//            }
+//        } else {
+//            tempList = traverseToBackwards(ancestor, data1, rightList);
+//            if (tempList == null) {
+//                throw new NoSuchElementException("The data is not in the tree");
+//            }
+//
+//            tempList = traverseToBackwards(ancestor, data2, list);
+//            if (tempList == null) {
+//                throw new NoSuchElementException("The data is not in the tree");
+//            }
+//            rightList.addAll(list);
+//            rightList.removeFirstOccurrence(ancestor.getData());
+//            rightList.addFirst(data1);
+//            rightList.addLast(data2);
+//            return rightList;
+//        }
+//
+//        list.addAll(rightList);
+//        // ancestor is added twice due to the way traverseTo works
+//        // remove the duplicate ancestor
+//        // since we don't worry about repeated data, we can just remove
+//        // last occurrence
+//        list.removeLastOccurrence(ancestor.getData());
+//        list.addFirst(data1);
+//        list.addLast(data2);
+//
+//        return list;
+
+    }
+
+    /**
+     * For forwards traversal
+     * Traverses from the given node to the given data and adds the data to
+     * the list.
+     *
+     * @param node     the node to start traversing from
+     * @param data     the data to traverse to
+     * @param leftList the list to add the data to
+     * @return the list of data traversed to
+     */
+    private LinkedList<T> traverseHelper(BSTNode<T> node, T data, LinkedList<T> leftList, LinkedList<T> rightList, T ancestor) {
+        if (node == null) {
+            return null;
+        }
+        if (data.compareTo(node.getData()) < 0 && data.compareTo(ancestor) < 0) {
+            System.out.println("<Node: " + node.getData());
+            if (node.getData().compareTo(ancestor) != 0) {
+                leftList.addFirst(node.getData());
+            }
+            return traverseHelper(node.getLeft(), data, leftList, rightList, ancestor);
+        } else if (data.compareTo(node.getData()) > 0 && data.compareTo(ancestor) < 0) {
+            System.out.println(">Node: " + node.getData());
+            if (node.getData().compareTo(ancestor) != 0) {
+                leftList.addLast(node.getData());
+            }
+            return traverseHelper(node.getRight(), data, leftList, rightList, ancestor);
+        } else if (data.compareTo(node.getData()) < 0 && data.compareTo(ancestor) > 0) {
+            System.out.println("d<Node: " + node.getData());
+            if (node.getData().compareTo(ancestor) != 0) {
+                rightList.add(node.getData());
+            }
+            return traverseHelper(node.getLeft(), data, leftList, rightList, ancestor);
+        } else if (data.compareTo(node.getData()) > 0 && data.compareTo(ancestor) > 0) {
+            System.out.println("d>Node: " + node.getData());
+            if (node.getData().compareTo(ancestor) != 0) {
+                leftList.add(node.getData());
+            }
+            return traverseHelper(node.getRight(), data, leftList, rightList, ancestor);
+        } else {
+            if (node.getData() == null) {
+                throw new NoSuchElementException("The data is not in the tree");
+            }
+            return null;
+        }
+    }
+
+    /**
+     * For forwards traversal
+     * Traverses from the given node to the given data and adds the data to
+     * the list.
+     *
+     * @param node the node to start traversing from
+     * @param data the data to traverse to
+     * @param list the list to add the data to
+     * @return the list of data traversed to
+     */
+    private LinkedList<T> traverseToBackwards(BSTNode<T> node, T data, LinkedList<T> list) {
+        if (node == null) {
+            return null;
+        }
+
+        if (data.compareTo(node.getData()) > 0 && data.compareTo(node.getData()) > 0) {
+            list.addLast(node.getData());
+            return traverseToBackwards(node.getRight(), data, list);
+        } else if (data.compareTo(node.getData()) < 0) {
+            list.addFirst(node.getData());
+            return traverseToBackwards(node.getLeft(), data, list);
+        }
+        return list;
+    }
+
+    /**
+     * Finds the deepest common ancestor of two elements in the tree.
+     *
+     * @param data1 the first data to find the common ancestor of
+     * @param data2 the second data to find the common ancestor of
+     * @param node  the node to start searching from
+     * @return the deepest common ancestor of the two data
+     */
+    private BSTNode<T> findDeepestCommonAncestor(T data1, T data2, BSTNode<T> node) {
+
+        if (node == null) {
+            return null;
+        }
+        if (node.getData().equals(data1) || node.getData().equals(data2)) {
+            return node;
+        }
+
+        if (data1 == null || data2 == null) {
+            throw new NoSuchElementException("The data is not in the tree");
+        }
+
+        BSTNode<T> left = findDeepestCommonAncestor(data1, data2, node.getLeft());
+        BSTNode<T> right = findDeepestCommonAncestor(data1, data2, node.getRight());
+
+        if (left != null && right != null) {
+            return node;
+        }
+
+        if (left != null) {
+            return left;
+        } else {
+            return right;
+        }
     }
 
 
