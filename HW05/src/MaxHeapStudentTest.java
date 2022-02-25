@@ -12,17 +12,17 @@ import java.util.NoSuchElementException;
 
 /**
  * This is a basic set of unit tests for MaxHeap.
- *
+ * <p>
  * Passing these tests doesn't guarantee any grade on these assignments. These
  * student JUnits that we provide should be thought of as a sanity check to
  * help you get started on the homework and writing JUnits in general.
- *
+ * <p>
  * We highly encourage you to write your own set of JUnits for each homework
  * to cover edge cases you can think of for each data structure. Your code must
  * work correctly and efficiently in all cases, which is why it's important
  * to write comprehensive tests to cover as many cases as possible.
  *
- * @author CS 1332 TAs (and Tomer Shmul)
+ * @author CS 1332 TAs
  * @version 1.0
  */
 public class MaxHeapStudentTest {
@@ -243,6 +243,101 @@ public class MaxHeapStudentTest {
                 heap.getBackingArray());
     }
 
+    //JUnits by Shivom Dhamija.
+
+    //Tests if the add method works correctly after clearing the heap.
+    @Test(timeout = TIMEOUT)
+    public void testClearAndAdd() {
+        /*
+                 3
+               /
+              2
+         */
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(2);
+        data.add(3);
+        heap = new MaxHeap<>(data);
+
+        assertEquals(2, heap.size());
+
+        Integer[] expected = new Integer[MaxHeap.INITIAL_CAPACITY];
+        expected[1] = 3;
+        expected[2] = 2;
+        assertEquals((Integer) 3, heap.getMax());
+
+        heap.clear();
+
+        assertTrue(heap.isEmpty());
+
+        heap.add(5);
+        assertEquals((Integer) 5, heap.getMax());
+    }
+
+    //Tests if the implemented BuildHeap algorithm works with negative integers.
+    @Test(timeout = TIMEOUT)
+    public void testBuildNegativeInt() {
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(-7);
+        data.add(-4);
+        data.add(-6);
+        data.add(-25);
+        data.add(-5);
+        heap = new MaxHeap<>(data);
+
+        assertEquals(5, heap.size());
+
+        assertEquals((Integer) (-4), heap.getMax());
+
+
+    }
+
+    //Tests what happens by adding a negative integer into the heap.
+    @Test(timeout = TIMEOUT)
+    public void testAddNegativeInt() {
+        heap.add(-2);
+        heap.add(-7);
+        heap.add(-1);
+
+        assertEquals(3, heap.size());
+
+        assertEquals((Integer) (-1), heap.getMax());
+
+        assertEquals((Integer) (-1), heap.remove());
+        assertEquals((Integer) (-2), heap.remove());
+        assertEquals((Integer) (-7), heap.remove());
+    }
+
+    //Tests adding building heap with both positive and negative integers.
+    @Test(timeout = TIMEOUT)
+    public void testBuildNegativeInt2() {
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(2);
+        data.add(7);
+        data.add(-6);
+        data.add(9);
+        data.add(-2);
+        data.add(1);
+        heap = new MaxHeap<>(data);
+
+        assertEquals(6, heap.size());
+
+        assertEquals((Integer) 9, heap.remove());
+        assertEquals((Integer) 7, heap.remove());
+        assertEquals((Integer) 2, heap.remove());
+        assertEquals((Integer) 1, heap.remove());
+        assertEquals((Integer) (-2), heap.remove());
+        assertEquals((Integer) (-6), heap.remove());
+
+        assertEquals(true, heap.isEmpty());
+    }
+
+    //Tests what calling getMax() does on an empty heap.
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testEmptyMax() {
+        heap.clear();
+        heap.getMax();
+    }
+
     @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
     public void testAddNullData() {
         heap.add(1);
@@ -268,8 +363,9 @@ public class MaxHeapStudentTest {
             heap.add(i);
         }
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 9; i >= 0; i--) {
             int x = heap.remove();
+            assertEquals(i, x);
         }
 
         assertEquals(0, heap.size());
@@ -285,6 +381,7 @@ public class MaxHeapStudentTest {
             int x = heap.remove();
         }
     }
+
     @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
     public void testGetMaxIfEmpty() {
         heap.remove();
@@ -333,92 +430,69 @@ public class MaxHeapStudentTest {
         assertEquals((Integer) 96, heap.remove());
     }
 
-    //JUnits by Shivom Dhamija.
-
-    //Tests if the add method works correctly after clearing the heap.
-    @Test(timeout = TIMEOUT)
-    public void testClearAndAdd() {
-        /*
-                 3
-               /
-              2
-         */
-        ArrayList<Integer> data = new ArrayList<>();
-        data.add(2);
-        data.add(3);
-        heap = new MaxHeap<>(data);
-
-        assertEquals(2, heap.size());
-
-        Integer[] expected = new Integer[MaxHeap.INITIAL_CAPACITY];
-        expected[1] = 3;
-        expected[2] = 2;
-        assertEquals((Integer) 3, heap.getMax());
-
-        heap.clear();
-
-        assertTrue(heap.isEmpty());
-
-        heap.add(5);
-        assertEquals((Integer) 5, heap.getMax());
+    //Olivia Blanchette exception tests
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testNullListMakeHeap() {
+        heap = new MaxHeap<>(null);
     }
 
-    //Tests if the implemented BuildHeap algorithm works with negative integeres.
-    @Test(timeout = TIMEOUT)
-    public void testBuildNegativeInt() {
-        ArrayList<Integer> data = new ArrayList<>();
-        data.add(-7);
-        data.add(-4);
-        data.add(-6);
-        data.add(-25);
-        data.add(-5);
-        heap = new MaxHeap<>(data);
-
-        assertEquals(5, heap.size());
-
-        assertEquals((Integer) (-4), heap.getMax());
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testNullListElementMakeHeap() {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(12);
+        list.add(null);
+        heap = new MaxHeap<>(list);
     }
 
-    //Tests what happens by adding a negative integer into the heap.
-    @Test(timeout = TIMEOUT)
-    public void testAddNegativeInt() {
-        heap.add(-2);
-        heap.add(-7);
-        heap.add(-1);
-
-        assertEquals(3, heap.size());
-
-        assertEquals((Integer) (-1), heap.getMax());
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testNullAdd() {
+        heap.add(15);
+        heap.add(57);
+        heap.add(null);
     }
 
-    //Tests adding building heap with both positive and negative integers.
-    @Test(timeout = TIMEOUT)
-    public void testBuildNegativeInt2() {
-        ArrayList<Integer> data = new ArrayList<>();
-        data.add(2);
-        data.add(7);
-        data.add(-6);
-        data.add(9);
-        data.add(-2);
-        data.add(1);
-        heap = new MaxHeap<>(data);
-
-        assertEquals(6, heap.size());
-
-        assertEquals((Integer) 9, heap.remove());
-        assertEquals((Integer) 7, heap.remove());
-        assertEquals((Integer) 2, heap.remove());
-        assertEquals((Integer) 1, heap.remove());
-        assertEquals((Integer) (-2), heap.remove());
-        assertEquals((Integer) (-6), heap.remove());
-
-        assertEquals(true, heap.isEmpty());
-    }
-
-    //Tests what calling getMax() does on an empty heap.
     @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
-    public void testEmptyMax() {
+    public void testRemoveTooMany() {
+        heap.add(15);
+        heap.add(57);
+        heap.remove();
+        heap.remove();
+        heap.remove();
+    }
+
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testClearAndRemove() {
+        heap.add(15);
+        heap.add(57);
         heap.clear();
+        heap.remove();
+    }
+
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testEmptyRemove() {
+        heap.remove();
+    }
+
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testRemoveAndGetMaxTooMany() {
+        heap.add(15);
+        heap.add(57);
+        heap.remove();
+        heap.remove();
+        heap.getMax();
+    }
+
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testClearAndGetMax() {
+        heap.add(15);
+        heap.add(57);
+        heap.clear();
+        heap.getMax();
+    }
+
+    @Test(timeout = TIMEOUT, expected = NoSuchElementException.class)
+    public void testEmptyGetMax() {
         heap.getMax();
     }
 }
