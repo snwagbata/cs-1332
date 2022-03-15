@@ -269,13 +269,11 @@ public class AVL<T extends Comparable<? super T>> {
             node.setLeft(removeHelper(node.getLeft(), data, dummy));
             node.setHeight(calcHeight(node.getLeft(), node.getRight()));
             node.setBalanceFactor(calcBalanceFactor(node.getLeft(), node.getRight()));
-            return rebalance(node);
 
         } else if (data.compareTo(node.getData()) > 0) {
             node.setRight(removeHelper(node.getRight(), data, dummy));
             node.setHeight(calcHeight(node.getLeft(), node.getRight()));
             node.setBalanceFactor(calcBalanceFactor(node.getLeft(), node.getRight()));
-            return rebalance(node);
         } else {
             dummy.setData(node.getData());
             size--;
@@ -294,9 +292,9 @@ public class AVL<T extends Comparable<? super T>> {
 
                 node.setHeight(calcHeight(node.getLeft(), node.getRight()));
                 node.setBalanceFactor(calcBalanceFactor(node.getLeft(), node.getRight()));
-                return rebalance(node);
             }
         }
+        return rebalance(node);
     }
 
     /**
