@@ -7,9 +7,9 @@ import java.util.NoSuchElementException;
  * Your implementation of an AVL Tree.
  *
  * @author Somtochukwu Nwagbata
+ * @version 1.0
  * @userid snwagbata3
  * @GTID 903685352
- * @version 1.0
  */
 public class AVL<T extends Comparable<? super T>> {
     // DO NOT ADD OR MODIFY INSTANCE VARIABLES.
@@ -18,7 +18,7 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * A no-argument constructor that should initialize an empty AVL.
-     *
+     * <p>
      * Since instance variables are initialized to their default values, there
      * is no need to do anything for this constructor.
      */
@@ -30,8 +30,8 @@ public class AVL<T extends Comparable<? super T>> {
      * Initializes the AVL tree with the data in the Collection. The data
      * should be added in the same order it appears in the Collection.
      *
-     * @throws IllegalArgumentException if data or any element in data is null
      * @param data the data to add to the tree
+     * @throws IllegalArgumentException if data or any element in data is null
      */
     public AVL(Collection<T> data) {
         if (data == null) {
@@ -47,15 +47,15 @@ public class AVL<T extends Comparable<? super T>> {
     /**
      * Adds the data to the AVL. Start by adding it as a leaf like in a regular
      * AVL and then rotate the tree as needed.
-     *
+     * <p>
      * If the data is already in the tree, then nothing should be done (the
      * duplicate shouldn't get added, and size should not be incremented).
-     *
+     * <p>
      * Remember to recalculate heights and balance factors going up the tree,
      * rebalancing if necessary.
      *
-     * @throws java.lang.IllegalArgumentException if the data is null
      * @param data the data to be added
+     * @throws java.lang.IllegalArgumentException if the data is null
      */
     public void add(T data) {
         if (data == null) {
@@ -91,6 +91,13 @@ public class AVL<T extends Comparable<? super T>> {
         return rebalance(node);
     }
 
+    /**
+     * Helper method for rebalancing.
+     *
+     * @param left  left child of the node
+     * @param right right child of the node
+     * @return root of the tree with data added
+     */
     private int calcBalanceFactor(AVLNode<T> left, AVLNode<T> right) {
         if (left == null && right == null) {
             return 0;
@@ -103,6 +110,13 @@ public class AVL<T extends Comparable<? super T>> {
         }
     }
 
+    /**
+     * Helper method for calculating node height.
+     *
+     * @param left  left child of the node
+     * @param right right child of the node
+     * @return root of the tree with data added
+     */
     private int calcHeight(AVLNode<T> left, AVLNode<T> right) {
         if (left == null && right == null) {
             return 0;
@@ -210,22 +224,22 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * Removes the data from the tree. There are 3 cases to consider:
-     *
+     * <p>
      * 1: the data is a leaf. In this case, simply remove it.
      * 2: the data has one child. In this case, simply replace it with its
      * child.
      * 3: the data has 2 children. Use the successor to replace the data,
      * not the predecessor. As a reminder, rotations can occur after removing
      * the successor node.
-     *
+     * <p>
      * Remember to recalculate heights going up the tree, rebalancing if
      * necessary.
      *
-     * @throws IllegalArgumentException if the data is null
-     * @throws java.util.NoSuchElementException if the data is not found
      * @param data the data to remove from the tree.
      * @return the data removed from the tree. Do not return the same data
      * that was passed in.  Return the data that was stored in the tree.
+     * @throws IllegalArgumentException         if the data is null
+     * @throws java.util.NoSuchElementException if the data is not found
      */
     public T remove(T data) {
         if (data == null) {
@@ -306,12 +320,12 @@ public class AVL<T extends Comparable<? super T>> {
      * Returns the data in the tree matching the parameter passed in (think
      * carefully: should you use value equality or reference equality?).
      *
-     * @throws IllegalArgumentException if the data is null
-     * @throws java.util.NoSuchElementException if the data is not found
      * @param data the data to search for in the tree.
      * @return the data in the tree equal to the parameter. Do not return the
      * same data that was passed in.  Return the data that was stored in the
      * tree.
+     * @throws IllegalArgumentException         if the data is null
+     * @throws java.util.NoSuchElementException if the data is not found
      */
     public T get(T data) {
         if (data == null) {
@@ -350,9 +364,9 @@ public class AVL<T extends Comparable<? super T>> {
      * contained within the tree. The same type of equality should be used as
      * in the get method.
      *
-     * @throws IllegalArgumentException if the data is null
      * @param data the data to search for in the tree.
      * @return whether or not the parameter is contained within the tree.
+     * @throws IllegalArgumentException if the data is null
      */
     public boolean contains(T data) {
         if (data == null) {
@@ -384,7 +398,7 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * The predecessor is the largest node that is smaller than the current data.
-     *
+     * <p>
      * This method should retrieve (but not remove) the predecessor of the data
      * passed in. There are 2 cases to consider:
      * 1: The left subtree is non-empty. In this case, the predecessor is the
@@ -392,16 +406,16 @@ public class AVL<T extends Comparable<? super T>> {
      * 2: The left subtree is empty. In this case, the predecessor is the lowest
      * ancestor of the node containing data whose right child is also
      * an ancestor of data.
-     *
+     * <p>
      * This should NOT be used in the remove method.
-     *
+     * <p>
      * Ex:
      * Given the following AVL composed of Integers
-     *     76
-     *   /    \
+     * 76
+     * /    \
      * 34      90
-     *  \    /
-     *  40  81
+     * \    /
+     * 40  81
      * predecessor(76) should return 40
      * predecessor(81) should return 76
      *
@@ -448,11 +462,12 @@ public class AVL<T extends Comparable<? super T>> {
      * Helper method for predecessor without access to parent.
      *
      * @param node root of the tree
+     * @param data data to be searched for
+     * @param dummy dummy node to be used in the recursive calls
      * @return predecessor of the parameter
-     *
      */
     private T findPredecessor(AVLNode<T> node,
-    T data, AVLNode<T> dummy) {
+                              T data, AVLNode<T> dummy) {
         if (node == null) {
             return null;
         }
@@ -483,22 +498,22 @@ public class AVL<T extends Comparable<? super T>> {
     /**
      * Finds and retrieves the k-smallest elements from the AVL in sorted order,
      * least to greatest.
-     *
+     * <p>
      * In most cases, this method will not need to traverse the entire tree to
      * function properly, so you should only traverse the branches of the tree
      * necessary to get the data and only do so once. Failure to do so will
      * result in an efficiency penalty.
-     *
+     * <p>
      * Ex:
      * Given the following AVL composed of Integers
-     *              50
-     *            /    \
-     *         25      75
-     *        /  \     / \
-     *      13   37  70  80
-     *    /  \    \      \
-     *   12  15    40    85
-     *  /
+     * 50
+     * /    \
+     * 25      75
+     * /  \     / \
+     * 13   37  70  80
+     * /  \    \      \
+     * 12  15    40    85
+     * /
      * 10
      * kSmallest(0) should return the list []
      * kSmallest(5) should return the list [10, 12, 13, 15, 25].
@@ -525,7 +540,7 @@ public class AVL<T extends Comparable<? super T>> {
      * Helper method for kSmallest.
      *
      * @param node root of the tree
-     * @param k number of smallest elements to return
+     * @param k    number of smallest elements to return
      * @param list list to be returned
      */
     private void kSmallestHelper(AVLNode<T> node, int k, List<T> list) {
@@ -555,7 +570,7 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * Returns the height of the root of the tree.
-     *
+     * <p>
      * Since this is an AVL, this method does not need to traverse the tree
      * and should be O(1)
      *
@@ -570,7 +585,7 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * Returns the size of the AVL tree.
-     *
+     * <p>
      * For grading purposes only. You shouldn't need to use this method since
      * you have direct access to the variable.
      *
@@ -583,7 +598,7 @@ public class AVL<T extends Comparable<? super T>> {
 
     /**
      * Returns the root of the AVL tree.
-     *
+     * <p>
      * For grading purposes only. You shouldn't need to use this method since
      * you have direct access to the variable.
      *
