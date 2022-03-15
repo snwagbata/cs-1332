@@ -470,4 +470,171 @@ public class ExternalChainingHashMapStudentTest {
         assertArrayEquals(new ExternalChainingMapEntry[ExternalChainingHashMap
                 .INITIAL_CAPACITY], map.getTable());
     }
+
+    //Shivom Dhamija Tests
+
+    @Test(timeout = TIMEOUT)
+    public void testResizeWithChainAfterResize() {
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(1, "B"));
+        assertNull(map.put(2, "C"));
+        assertNull(map.put(15, "D"));
+        assertNull(map.put(28, "E"));
+
+        map.resizeBackingTable(27);
+
+        assertEquals(5, map.size());
+        assertEquals("A", map.getTable()[0].getValue());
+        assertEquals("E", map.getTable()[1].getValue());
+        assertEquals("C", map.getTable()[2].getValue());
+        assertEquals("D", map.getTable()[15].getValue());
+        assertNull(map.getTable()[15].getNext());
+        assertEquals("B", map.getTable()[1].getNext().getValue());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testPutWithChainResize() {
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(1, "B"));
+        assertNull(map.put(2, "C"));
+        assertNull(map.put(15, "D"));
+        assertNull(map.put(28, "E"));
+        assertNull(map.put(3, "F"));
+        assertNull(map.put(16, "G"));
+        assertNull(map.put(4, "H"));
+        assertNull(map.put(5, "I"));
+
+        assertEquals("A", map.getTable()[0].getValue());
+        assertEquals("E", map.getTable()[1].getValue());
+        assertEquals("B", map.getTable()[1].getNext().getValue());
+        assertEquals("D", map.getTable()[15].getValue());
+        assertNull(map.getTable()[15].getNext());
+        assertEquals("G", map.getTable()[16].getValue());
+        assertNull(map.getTable()[16].getNext());
+    }
+
+    //Olivia Blanchette Tests
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testPutNullKey() {
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(null, "B"));
+    }
+
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testPutNullValue() {
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(5, null));
+    }
+
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testRemoveNullKey() {
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(3, "B"));
+        map.remove(null);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testRemoveKeyNotInMap(){
+        assertNull(map.put(4, "D"));
+        assertNull(map.put(6, "F"));
+        assertNull(map.put(1, "A"));
+        map.remove(2);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testRemoveKeyNotInMapChain(){
+        map.resizeBackingTable(12);
+        assertNull(map.put(3, "D"));
+        assertNull(map.put(5, "F"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(12, "M"));
+        assertNull(map.put(24, "Y"));
+        map.remove(48);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testRemoveKeyAlreadyRemoved(){
+        map.resizeBackingTable(12);
+        assertNull(map.put(3, "D"));
+        assertNull(map.put(5, "F"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(12, "M"));
+        assertNull(map.put(24, "Y"));
+        assertEquals(map.remove(12), "M");
+        map.remove(12);
+    }
+
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testGetNullKey() {
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(3, "B"));
+        map.get(null);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testGetKeyNotInMap(){
+        assertNull(map.put(4, "D"));
+        assertNull(map.put(6, "F"));
+        assertNull(map.put(1, "A"));
+        map.get(2);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testGetKeyNotInMapChain(){
+        map.resizeBackingTable(12);
+        assertNull(map.put(3, "D"));
+        assertNull(map.put(5, "F"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(12, "M"));
+        assertNull(map.put(24, "Y"));
+        map.get(48);
+    }
+
+    @Test(timeout = TIMEOUT, expected= NoSuchElementException.class)
+    public void testGetKeyAlreadyRemoved(){
+        map.resizeBackingTable(12);
+        assertNull(map.put(3, "D"));
+        assertNull(map.put(5, "F"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(12, "M"));
+        assertNull(map.put(24, "Y"));
+        assertEquals(map.remove(12), "M");
+        map.get(12);
+    }
+
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testContainsNullKey() {
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(3, "B"));
+        map.containsKey(null);
+    }
+
+    @Test(timeout = TIMEOUT, expected = IllegalArgumentException.class)
+    public void testResizeSmall(){
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(3, "B"));
+        assertNull(map.put(2, "A"));
+        assertNull(map.put(1, "B"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(13, "B"));
+        assertNull(map.put(59, "A"));
+        assertNull(map.put(12, "B"));
+        assertEquals(map.size(), 8);
+        map.resizeBackingTable(7);
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testResizeExact(){
+        assertNull(map.put(14, "A"));
+        assertNull(map.put(3, "B"));
+        assertNull(map.put(2, "A"));
+        assertNull(map.put(1, "B"));
+        assertNull(map.put(0, "A"));
+        assertNull(map.put(13, "B"));
+        assertNull(map.put(59, "A"));
+        assertNull(map.put(12, "B"));
+        map.resizeBackingTable(8);
+        assertEquals(map.size(), 8);
+        assertEquals(map.getTable().length, 8);
+    }
 }
