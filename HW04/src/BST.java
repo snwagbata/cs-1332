@@ -266,7 +266,7 @@ public class BST<T extends Comparable<? super T>> {
      */
     public boolean contains(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Cannot get invalid data " + "from the Tree");
+            throw new IllegalArgumentException("Cannot get invalid data from the Tree");
         }
 
         return containsHelper(root, data);
