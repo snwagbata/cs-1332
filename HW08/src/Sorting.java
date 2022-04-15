@@ -44,7 +44,7 @@ public class Sorting {
             throw new IllegalArgumentException("Array or comparator cannot be null");
         }
 
-        for (int i = arr.length - 1; i > 1; i--) {
+        for (int i = arr.length - 1; i > 0; i--) {
             int swapIndex = i;
             for (int j = 0; j < i; j++) {
                 if (comparator.compare(arr[j], arr[swapIndex]) > 0) {
