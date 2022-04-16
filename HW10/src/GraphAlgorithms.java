@@ -87,10 +87,10 @@ public class GraphAlgorithms {
     /**
      * Updates the list of vertices adjacent to the current vertex
      *
-     * @param current the current vertex
+     * @param current          the current vertex
      * @param adjacentVertices the list of vertices adjacent to the current vertex
-     * @param adjList the adjacency list of the graph
-     * @param <T> the generic type of the data
+     * @param adjList          the adjacency list of the graph
+     * @param <T>              the generic type of the data
      */
     private static <T> void updateAdjacentVerticesList(Vertex<T> current, List<Vertex<T>> adjacentVertices,
                                                        Map<Vertex<T>, List<VertexDistance<T>>> adjList) {
@@ -144,10 +144,10 @@ public class GraphAlgorithms {
     /**
      * Helper method for dfs
      *
-     * @param start the vertex to begin the dfs on
-     * @param graph the graph to search through
+     * @param start   the vertex to begin the dfs on
+     * @param graph   the graph to search through
      * @param visited the set of visited vertices
-     * @param <T> the generic type of the data
+     * @param <T>     the generic type of the data
      * @return list of vertices in visited order
      */
     private static <T> List<Vertex<T>> dfsHelper(Vertex<T> start, Graph<T> graph, Set<Vertex<T>> visited) {
@@ -317,11 +317,12 @@ public class GraphAlgorithms {
         // add start vertex to visited
         visited.add(start);
 
-        while (!pq.isEmpty() && visited.size() < graph.getVertices().size()) {
+        while (!pq.isEmpty()) {
             Edge<T> current = pq.remove();
             if (!visited.contains(current.getV())) {
                 visited.add(current.getV());
                 mst.add(current);
+                mst.add(new Edge<>(current.getV(), current.getU(), current.getWeight()));
                 for (Edge<T> edge : graph.getEdges()) {
                     if (edge.getU().equals(current.getV()) && !visited.contains(edge.getV())) {
                         pq.add(edge);
@@ -331,6 +332,9 @@ public class GraphAlgorithms {
             }
         }
 
+        if (mst.size() < graph.getVertices().size() - 1) {
+            return null;
+        }
         return mst;
     }
 }
